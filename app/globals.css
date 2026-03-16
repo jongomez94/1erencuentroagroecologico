@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --earth-bg: #f7f5f0;
+  --earth-card: #ebe7dc;
+  --leaf-primary: #2d6f47;
+  --leaf-hover: #25573a;
+  --text-primary: #2d2a26;
+  --text-muted: #5a4e3c;
+}
+
+body {
+  @apply bg-earth-50 text-earth-900 antialiased;
+  background-color: var(--earth-bg);
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
