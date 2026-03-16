@@ -1,8 +1,10 @@
--- Run this in the Supabase SQL Editor to create the event_registrations table.
--- Dashboard: https://app.supabase.com → Your project → SQL Editor
--- If the table already exists with different structure, drop it first: drop table if exists public.event_registrations;
+-- Usa este script si recibes error 400 al enviar el formulario.
+-- Recrea la tabla event_registrations con la estructura correcta.
+-- Ejecuta en: Supabase → SQL Editor
 
-create table if not exists public.event_registrations (
+drop table if exists public.event_registrations;
+
+create table public.event_registrations (
   id uuid primary key default gen_random_uuid(),
   created_at timestamptz default now(),
 
@@ -33,7 +35,6 @@ create table if not exists public.event_registrations (
   consent_given boolean not null default false
 );
 
--- Optional: enable Row Level Security (RLS) and allow anonymous inserts for the form
 alter table public.event_registrations enable row level security;
 
 create policy "Allow anonymous insert for event registration"
@@ -41,10 +42,3 @@ create policy "Allow anonymous insert for event registration"
   for insert
   to anon
   with check (true);
-
--- Optional: restrict reads to authenticated users only (e.g. your CRM)
--- create policy "Allow authenticated read"
---   on public.event_registrations
---   for select
---   to authenticated
---   using (true);

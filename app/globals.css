@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 :root {
-  --earth-bg: #f7f5f0;
-  --earth-card: #ebe7dc;
+  --earth-bg: #f5f2eb;
+  --earth-card: #faf8f3;
   --leaf-primary: #2d6f47;
   --leaf-hover: #25573a;
   --text-primary: #2d2a26;
@@ -12,12 +12,19 @@
 }
 
 body {
-  @apply bg-earth-50 text-earth-900 antialiased;
-  background-color: var(--earth-bg);
+  @apply text-earth-900 antialiased;
+  background: linear-gradient(160deg, #f5f2eb 0%, #ebe8df 50%, #e8e6dc 100%);
+  min-height: 100vh;
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+/* Subtle organic background pattern */
+.bg-pattern {
+  background-image: radial-gradient(circle at 20% 80%, rgba(45, 111, 71, 0.04) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(45, 111, 71, 0.05) 0%, transparent 45%);
 }
