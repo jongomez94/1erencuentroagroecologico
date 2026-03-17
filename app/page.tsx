@@ -33,11 +33,24 @@ const INITIAL_FORM: FormState = {
   consent_given: false,
 };
 
+const TOTAL_STEPS = 4;
+
 export default function RegistrationPage() {
   const [form, setForm] = useState<FormState>(INITIAL_FORM);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [currentStep, setCurrentStep] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+
+  const goToStep = (nextStep: number) => {
+    if (nextStep === currentStep) return;
+    setIsTransitioning(true);
+    setTimeout(() => {
+      setCurrentStep(nextStep);
+      setTimeout(() => setIsTransitioning(false), 40);
+    }, 280);
+  };
 
   const update = (key: keyof typeof form, value: string | boolean | null) => {
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -129,11 +142,6 @@ export default function RegistrationPage() {
     <main className="min-h-screen bg-pattern px-4 py-10 sm:py-16">
       <div className="mx-auto max-w-2xl">
         <header className="mb-10 text-center sm:mb-12">
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-leaf-100 text-leaf-600">
-            <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
-            </svg>
-          </div>
           <h1 className="text-3xl font-bold tracking-tight text-leaf-900 sm:text-4xl">
             1er Encuentro Agroecológico Tomasino
           </h1>
@@ -146,7 +154,29 @@ export default function RegistrationPage() {
           onSubmit={handleSubmit}
           className="rounded-3xl bg-white/80 p-6 shadow-xl shadow-earth-200/30 ring-1 ring-earth-200/50 backdrop-blur-sm sm:p-10"
         >
-          <div className="space-y-10">
+          {/* Indicador de pasos */}
+          <div className="mb-8 flex items-center justify-center gap-2 sm:gap-3">
+            {Array.from({ length: TOTAL_STEPS }, (_, i) => (
+              <button
+                key={i}
+                type="button"
+                onClick={() => !isTransitioning && goToStep(i)}
+                disabled={isTransitioning}
+                className={`h-2.5 w-2.5 rounded-full transition-all sm:h-3 sm:w-3 ${
+                  i === currentStep ? "scale-125 bg-leaf-600" : "bg-earth-300/70 hover:bg-earth-300"
+                }`}
+                aria-label={`Ir al paso ${i + 1}`}
+                aria-current={i === currentStep ? "step" : undefined}
+              />
+            ))}
+          </div>
+
+          <div
+            className={`min-h-[280px] transition-opacity duration-300 ease-out sm:min-h-[320px] ${
+              isTransitioning ? "opacity-0" : "opacity-100"
+            }`}
+          >
+            {currentStep === 0 && (
             <FormSection
               step={1}
               title="Información básica"
@@ -154,7 +184,7 @@ export default function RegistrationPage() {
             >
               <div>
                 <label htmlFor="full_name" className="block text-sm font-medium text-earth-800">
-                  Nombre completo
+                  Nombre
                 </label>
                 <input
                   id="full_name"
@@ -217,7 +247,9 @@ export default function RegistrationPage() {
                 )}
               </div>
             </FormSection>
+            )}
 
+            {currentStep === 1 && (
             <FormSection
               step={2}
               title="Participación en el evento"
@@ -254,7 +286,9 @@ export default function RegistrationPage() {
                 onChange={(e) => update("interested_in_agroecology", e.target.checked)}
               />
             </FormSection>
+            )}
 
+            {currentStep === 2 && (
             <FormSection
               step={3}
               title="Intereses"
@@ -291,7 +325,9 @@ export default function RegistrationPage() {
                 onChange={(e) => update("interest_future_events", e.target.checked)}
               />
             </FormSection>
+            )}
 
+            {currentStep === 3 && (
             <FormSection step={4} title="Consentimiento">
               <CheckboxField
                 id="consent_given"
@@ -304,22 +340,50 @@ export default function RegistrationPage() {
                 <p className="mt-1.5 text-sm text-red-600">{errors.consent_given}</p>
               )}
             </FormSection>
+            )}
           </div>
 
           {errors.submit && (
-            <div className="mt-8 rounded-xl bg-red-50 p-4 text-sm text-red-700 ring-1 ring-red-200/60">
+            <div className="mt-6 rounded-xl bg-red-50 p-4 text-sm text-red-700 ring-1 ring-red-200/60">
               {errors.submit}
             </div>
           )}
 
-          <div className="mt-10 pt-2">
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full rounded-xl bg-leaf-600 px-6 py-4 text-base font-semibold text-white shadow-lg shadow-leaf-900/20 transition-all hover:bg-leaf-700 focus:outline-none focus:ring-2 focus:ring-leaf-500 focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:bg-leaf-600"
-            >
-              {loading ? "Enviando..." : "Enviar registro"}
-            </button>
+          <div className="mt-8 flex flex-col gap-3 pt-2 sm:flex-row-reverse sm:gap-4">
+            {currentStep < TOTAL_STEPS - 1 ? (
+              <button
+                type="button"
+                onClick={() => goToStep(currentStep + 1)}
+                disabled={isTransitioning}
+                className="flex min-h-[48px] w-full items-center justify-center gap-2 rounded-xl bg-leaf-600 px-6 py-3.5 text-base font-semibold text-white shadow-lg shadow-leaf-900/20 transition-all active:scale-[0.98] hover:bg-leaf-700 focus:outline-none focus:ring-2 focus:ring-leaf-500 focus:ring-offset-2 disabled:opacity-70 disabled:pointer-events-none sm:min-h-[52px] sm:flex-1 sm:py-4"
+              >
+                Siguiente
+                <svg className="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </button>
+            ) : (
+              <button
+                type="submit"
+                disabled={loading}
+                className="flex min-h-[48px] w-full items-center justify-center gap-2 rounded-xl bg-leaf-600 px-6 py-3.5 text-base font-semibold text-white shadow-lg shadow-leaf-900/20 transition-all active:scale-[0.98] hover:bg-leaf-700 focus:outline-none focus:ring-2 focus:ring-leaf-500 focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed disabled:active:scale-100 sm:min-h-[52px] sm:flex-1 sm:py-4"
+              >
+                {loading ? "Enviando..." : "Enviar registro"}
+              </button>
+            )}
+            {currentStep > 0 && (
+              <button
+                type="button"
+                onClick={() => goToStep(currentStep - 1)}
+                disabled={isTransitioning}
+                className="flex min-h-[48px] w-full items-center justify-center gap-2 rounded-xl border-2 border-earth-300 bg-white px-6 py-3.5 text-base font-semibold text-earth-700 transition-all active:scale-[0.98] hover:border-leaf-300 hover:bg-leaf-50 hover:text-leaf-800 focus:outline-none focus:ring-2 focus:ring-leaf-500 focus:ring-offset-2 disabled:opacity-70 disabled:pointer-events-none sm:min-h-[52px] sm:flex-1 sm:py-4"
+              >
+                <svg className="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M11 17l-5-5m0 0l5-5m-5 5h12" />
+                </svg>
+                Anterior
+              </button>
+            )}
           </div>
         </form>
       </div>
