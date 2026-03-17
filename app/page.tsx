@@ -57,15 +57,29 @@ export default function RegistrationPage() {
     if (errors[key]) setErrors((prev) => ({ ...prev, [key]: "" }));
   };
 
+  /** Valida solo los campos de la fase 1 (información básica). Usado al hacer clic en Siguiente. */
+  const validatePhase1 = (): boolean => {
+    const next: Record<string, string> = {};
+    if (!form.full_name?.trim()) next.full_name = "Por favor ingresa tu nombre.";
+    if (!form.phone?.trim()) next.phone = "Por favor ingresa tu teléfono o WhatsApp.";
+    if (!form.email?.trim()) next.email = "Por favor ingresa tu correo electrónico.";
+    if (form.email?.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) {
+      next.email = "Por favor ingresa un correo electrónico válido.";
+    }
+    if (!form.community?.trim()) next.community = "Por favor ingresa tu municipio o comunidad.";
+    setErrors((prev) => ({ ...prev, ...next }));
+    return Object.keys(next).length === 0;
+  };
+
   const validate = (): boolean => {
     const next: Record<string, string> = {};
-    if (!form.full_name?.trim()) next.full_name = "Por favor escribe tu nombre completo.";
-    if (!form.phone?.trim()) next.phone = "Por favor escribe tu teléfono o WhatsApp.";
-    if (!form.email?.trim()) next.email = "Por favor escribe tu correo electrónico.";
+    if (!form.full_name?.trim()) next.full_name = "Ingresa tu nombre.";
+    if (!form.phone?.trim()) next.phone = "Ingresa tu teléfono o WhatsApp.";
+    if (!form.email?.trim()) next.email = "Ingresa tu correo electrónico.";
     if (form.email?.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) {
-      next.email = "Por favor escribe un correo electrónico válido.";
+      next.email = "Ingresa un correo electrónico válido.";
     }
-    if (!form.community?.trim()) next.community = "Por favor indica tu municipio o comunidad.";
+    if (!form.community?.trim()) next.community = "Ingresa tu municipio o comunidad.";
     if (!form.consent_given) next.consent_given = "Debes aceptar el uso de tu información para poder registrarte.";
     setErrors(next);
     return Object.keys(next).length === 0;
@@ -353,7 +367,10 @@ export default function RegistrationPage() {
             {currentStep < TOTAL_STEPS - 1 ? (
               <button
                 type="button"
-                onClick={() => goToStep(currentStep + 1)}
+                onClick={() => {
+                  if (currentStep === 0 && !validatePhase1()) return;
+                  goToStep(currentStep + 1);
+                }}
                 disabled={isTransitioning}
                 className="flex min-h-[48px] w-full items-center justify-center gap-2 rounded-xl bg-leaf-600 px-6 py-3.5 text-base font-semibold text-white shadow-lg shadow-leaf-900/20 transition-all active:scale-[0.98] hover:bg-leaf-700 focus:outline-none focus:ring-2 focus:ring-leaf-500 focus:ring-offset-2 disabled:opacity-70 disabled:pointer-events-none sm:min-h-[52px] sm:flex-1 sm:py-4"
               >
