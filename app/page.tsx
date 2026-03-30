@@ -2,9 +2,11 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { useTranslation } from "react-i18next";
 import { supabase, EventRegistration } from "@/lib/supabaseClient";
 import FormSection from "@/components/FormSection";
 import CheckboxField from "@/components/CheckboxField";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 type FormState = Omit<EventRegistration, "id" | "created_at"> & {
   interest_producers: boolean;
@@ -41,6 +43,7 @@ const HERO_IMAGE =
   "https://images.unsplash.com/photo-1560493676-04071c5f467b?auto=format&fit=crop&w=1920&q=80";
 
 export default function RegistrationPage() {
+  const { t } = useTranslation();
   const [form, setForm] = useState<FormState>(INITIAL_FORM);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
@@ -65,27 +68,27 @@ export default function RegistrationPage() {
   /** Valida solo los campos de la fase 1 (información básica). Usado al hacer clic en Siguiente. */
   const validatePhase1 = (): boolean => {
     const next: Record<string, string> = {};
-    if (!form.full_name?.trim()) next.full_name = "Por favor ingresa tu nombre.";
-    if (!form.phone?.trim()) next.phone = "Por favor ingresa tu teléfono o WhatsApp.";
-    if (!form.email?.trim()) next.email = "Por favor ingresa tu correo electrónico.";
+    if (!form.full_name?.trim()) next.full_name = t("errors.phase1.full_name");
+    if (!form.phone?.trim()) next.phone = t("errors.phase1.phone");
+    if (!form.email?.trim()) next.email = t("errors.phase1.email");
     if (form.email?.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) {
-      next.email = "Por favor ingresa un correo electrónico válido.";
+      next.email = t("errors.phase1.emailInvalid");
     }
-    if (!form.community?.trim()) next.community = "Por favor ingresa tu municipio o comunidad.";
+    if (!form.community?.trim()) next.community = t("errors.phase1.community");
     setErrors((prev) => ({ ...prev, ...next }));
     return Object.keys(next).length === 0;
   };
 
   const validate = (): boolean => {
     const next: Record<string, string> = {};
-    if (!form.full_name?.trim()) next.full_name = "Ingresa tu nombre.";
-    if (!form.phone?.trim()) next.phone = "Ingresa tu teléfono o WhatsApp.";
-    if (!form.email?.trim()) next.email = "Ingresa tu correo electrónico.";
+    if (!form.full_name?.trim()) next.full_name = t("errors.submit.full_name");
+    if (!form.phone?.trim()) next.phone = t("errors.submit.phone");
+    if (!form.email?.trim()) next.email = t("errors.submit.email");
     if (form.email?.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) {
-      next.email = "Ingresa un correo electrónico válido.";
+      next.email = t("errors.submit.emailInvalid");
     }
-    if (!form.community?.trim()) next.community = "Ingresa tu municipio o comunidad.";
-    if (!form.consent_given) next.consent_given = "Debes aceptar el uso de tu información para poder registrarte.";
+    if (!form.community?.trim()) next.community = t("errors.submit.community");
+    if (!form.consent_given) next.consent_given = t("errors.submit.consent_given");
     setErrors(next);
     return Object.keys(next).length === 0;
   };
@@ -127,15 +130,25 @@ export default function RegistrationPage() {
       }
       setSuccess(true);
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "Error al enviar. Intenta de nuevo.";
+      const message = err instanceof Error ? err.message : t("errors.genericSubmit");
       setErrors({ submit: message });
     } finally {
       setLoading(false);
     }
   };
 
-  if (success) {
-    return (
+  const inputBase =
+    "mt-2 block w-full rounded-xl border border-earth-300 bg-white/90 px-4 py-3 text-earth-900 placeholder-earth-400 transition-colors focus:border-leaf-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-leaf-500/30";
+
+  return (
+    <>
+      <div className="pointer-events-none fixed inset-x-0 top-0 z-[60] flex justify-end p-4 sm:p-5">
+        <div className="pointer-events-auto">
+          <LanguageSwitcher />
+        </div>
+      </div>
+
+      {success ? (
       <main className="min-h-screen bg-pattern px-4 py-16 sm:py-24">
         <div className="mx-auto max-w-md overflow-hidden rounded-3xl bg-white/95 px-8 pb-10 pt-0 text-center shadow-2xl shadow-leaf-900/10 ring-1 ring-earth-200/70 sm:px-10">
           <div className="-mx-8 h-1.5 bg-gradient-to-r from-leaf-700 via-leaf-500 to-leaf-600 sm:-mx-10" aria-hidden />
@@ -145,24 +158,18 @@ export default function RegistrationPage() {
             </svg>
           </div>
           <h1 className="mt-6 text-2xl font-bold text-leaf-800 sm:text-3xl">
-            ¡Gracias por registrarte!
+            {t("success.title")}
           </h1>
           <p className="mt-4 text-lg leading-relaxed text-earth-700">
-            Nos vemos en el 1er Encuentro Agroecológico Tomasino.
+            {t("success.body")}
           </p>
         </div>
       </main>
-    );
-  }
-
-  const inputBase =
-    "mt-2 block w-full rounded-xl border border-earth-300 bg-white/90 px-4 py-3 text-earth-900 placeholder-earth-400 transition-colors focus:border-leaf-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-leaf-500/30";
-
-  return (
-    <>
+      ) : (
+      <>
       <section
         className="relative isolate min-h-[min(52vh,28rem)] w-full overflow-hidden sm:min-h-[min(56vh,32rem)]"
-        aria-label="Encabezado del evento"
+        aria-label={t("hero.ariaLabel")}
       >
         <Image
           src={HERO_IMAGE}
@@ -177,9 +184,14 @@ export default function RegistrationPage() {
           aria-hidden
         />
         <div className="relative z-10 flex min-h-[min(52vh,28rem)] items-center justify-center px-5 py-14 sm:min-h-[min(56vh,32rem)] sm:py-16">
-          <h1 className="hero-title max-w-4xl text-center font-hero text-3xl font-bold leading-[1.15] tracking-tight text-white sm:text-4xl md:text-5xl lg:text-[3.25rem]">
-            1er Encuentro Agroecológico Tomasino
-          </h1>
+          <div className="max-w-3xl text-center">
+            <h1 className="hero-title font-hero text-3xl font-bold leading-[1.15] tracking-tight text-white sm:text-4xl md:text-5xl lg:text-[3.25rem]">
+              {t("hero.title")}
+            </h1>
+            <p className="hero-subtitle mt-5 max-w-2xl text-pretty text-base font-medium leading-relaxed text-white/95 sm:mt-6 sm:text-lg md:text-xl">
+              {t("hero.subtitle")}
+            </p>
+          </div>
         </div>
       </section>
 
@@ -187,10 +199,9 @@ export default function RegistrationPage() {
         <div className="mx-auto max-w-2xl">
           <header className="mb-8 text-center sm:mb-10">
             <p className="mx-auto max-w-xl text-pretty text-base leading-relaxed text-earth-700 sm:text-lg">
-              Encuentro comunitario para compartir conocimientos sobre agroecología, compostaje, semillas y producción
-              local.
+              {t("intro.body")}
             </p>
-            <p className="mt-3 text-sm font-medium text-leaf-700">Completa el registro a continuación</p>
+            <p className="mt-3 text-sm font-medium text-leaf-700">{t("intro.cta")}</p>
           </header>
 
         <form
@@ -208,7 +219,7 @@ export default function RegistrationPage() {
                 className={`h-2.5 w-2.5 rounded-full transition-all sm:h-3 sm:w-3 ${
                   i === currentStep ? "scale-125 bg-leaf-600" : "bg-earth-300/70 hover:bg-earth-300"
                 }`}
-                aria-label={`Ir al paso ${i + 1}`}
+                aria-label={t("aria.goToStep", { n: i + 1 })}
                 aria-current={i === currentStep ? "step" : undefined}
               />
             ))}
@@ -222,12 +233,12 @@ export default function RegistrationPage() {
             {currentStep === 0 && (
             <FormSection
               step={1}
-              title="Información básica"
-              description="Necesitamos estos datos para contactarte y organizar el encuentro."
+              title={t("sections.basic.title")}
+              description={t("sections.basic.description")}
             >
               <div>
                 <label htmlFor="full_name" className="block text-sm font-medium text-earth-800">
-                  Nombre
+                  {t("fields.fullName")}
                 </label>
                 <input
                   id="full_name"
@@ -235,7 +246,7 @@ export default function RegistrationPage() {
                   value={form.full_name}
                   onChange={(e) => update("full_name", e.target.value)}
                   className={inputBase}
-                  placeholder="Ej. María García"
+                  placeholder={t("placeholders.fullName")}
                 />
                 {errors.full_name && (
                   <p className="mt-1.5 text-sm text-red-600">{errors.full_name}</p>
@@ -243,7 +254,7 @@ export default function RegistrationPage() {
               </div>
               <div>
                 <label htmlFor="phone" className="block text-sm font-medium text-earth-800">
-                  Teléfono / WhatsApp
+                  {t("fields.phone")}
                 </label>
                 <input
                   id="phone"
@@ -251,7 +262,7 @@ export default function RegistrationPage() {
                   value={form.phone}
                   onChange={(e) => update("phone", e.target.value)}
                   className={inputBase}
-                  placeholder="Ej. 7000 1234"
+                  placeholder={t("placeholders.phone")}
                 />
                 {errors.phone && (
                   <p className="mt-1.5 text-sm text-red-600">{errors.phone}</p>
@@ -259,7 +270,7 @@ export default function RegistrationPage() {
               </div>
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-earth-800">
-                  Correo electrónico
+                  {t("fields.email")}
                 </label>
                 <input
                   id="email"
@@ -267,7 +278,7 @@ export default function RegistrationPage() {
                   value={form.email || ""}
                   onChange={(e) => update("email", e.target.value)}
                   className={inputBase}
-                  placeholder="correo@ejemplo.com"
+                  placeholder={t("placeholders.email")}
                 />
                 {errors.email && (
                   <p className="mt-1.5 text-sm text-red-600">{errors.email}</p>
@@ -275,7 +286,7 @@ export default function RegistrationPage() {
               </div>
               <div>
                 <label htmlFor="community" className="block text-sm font-medium text-earth-800">
-                  Municipio o comunidad
+                  {t("fields.community")}
                 </label>
                 <input
                   id="community"
@@ -283,7 +294,7 @@ export default function RegistrationPage() {
                   value={form.community}
                   onChange={(e) => update("community", e.target.value)}
                   className={inputBase}
-                  placeholder="Ej. San Salvador, Santo Tomás"
+                  placeholder={t("placeholders.community")}
                 />
                 {errors.community && (
                   <p className="mt-1.5 text-sm text-red-600">{errors.community}</p>
@@ -295,36 +306,36 @@ export default function RegistrationPage() {
             {currentStep === 1 && (
             <FormSection
               step={2}
-              title="Participación en el evento"
-              description="¿Cómo te gustaría participar? Puedes marcar más de una opción."
+              title={t("sections.participation.title")}
+              description={t("sections.participation.description")}
             >
               <CheckboxField
                 id="is_visitor"
-                label="Solo asistir como visitante"
+                label={t("checkboxes.visitor")}
                 checked={form.is_visitor}
                 onChange={(e) => update("is_visitor", e.target.checked)}
               />
               <CheckboxField
                 id="is_producer"
-                label="Soy productor/a agroecológico"
+                label={t("checkboxes.producer")}
                 checked={form.is_producer}
                 onChange={(e) => update("is_producer", e.target.checked)}
               />
               <CheckboxField
                 id="is_student"
-                label="Soy estudiante"
+                label={t("checkboxes.student")}
                 checked={form.is_student}
                 onChange={(e) => update("is_student", e.target.checked)}
               />
               <CheckboxField
                 id="works_in_org"
-                label="Trabajo en organización o institución"
+                label={t("checkboxes.worksInOrg")}
                 checked={form.works_in_org}
                 onChange={(e) => update("works_in_org", e.target.checked)}
               />
               <CheckboxField
                 id="interested_in_agroecology"
-                label="Tengo interés en aprender agroecología"
+                label={t("checkboxes.interestedAgroecology")}
                 checked={form.interested_in_agroecology}
                 onChange={(e) => update("interested_in_agroecology", e.target.checked)}
               />
@@ -334,36 +345,36 @@ export default function RegistrationPage() {
             {currentStep === 2 && (
             <FormSection
               step={3}
-              title="Intereses"
-              description="¿Qué te gustaría hacer en el encuentro? Marca lo que te interese."
+              title={t("sections.interests.title")}
+              description={t("sections.interests.description")}
             >
               <CheckboxField
                 id="interest_compost"
-                label="Aprender sobre compost"
+                label={t("checkboxes.compost")}
                 checked={form.interest_compost}
                 onChange={(e) => update("interest_compost", e.target.checked)}
               />
               <CheckboxField
                 id="interest_producers"
-                label="Conocer productores locales"
+                label={t("checkboxes.producers")}
                 checked={form.interest_producers}
                 onChange={(e) => update("interest_producers", e.target.checked)}
               />
               <CheckboxField
                 id="interest_seeds"
-                label="Intercambiar semillas"
+                label={t("checkboxes.seeds")}
                 checked={form.interest_seeds}
                 onChange={(e) => update("interest_seeds", e.target.checked)}
               />
               <CheckboxField
                 id="interest_networking"
-                label="Crear redes agroecológicas"
+                label={t("checkboxes.networking")}
                 checked={form.interest_networking}
                 onChange={(e) => update("interest_networking", e.target.checked)}
               />
               <CheckboxField
                 id="interest_future_events"
-                label="Participar en futuros eventos"
+                label={t("checkboxes.futureEvents")}
                 checked={form.interest_future_events}
                 onChange={(e) => update("interest_future_events", e.target.checked)}
               />
@@ -371,11 +382,11 @@ export default function RegistrationPage() {
             )}
 
             {currentStep === 3 && (
-            <FormSection step={4} title="Consentimiento">
+            <FormSection step={4} title={t("sections.consent.title")}>
               <CheckboxField
                 id="consent_given"
-                label="Acepto que mi información sea usada para organizar este encuentro y futuros eventos agroecológicos."
-                helperText="Requerido para completar el registro."
+                label={t("checkboxes.consent")}
+                helperText={t("checkboxes.consentHelper")}
                 checked={form.consent_given}
                 onChange={(e) => update("consent_given", e.target.checked)}
               />
@@ -403,7 +414,7 @@ export default function RegistrationPage() {
                 disabled={isTransitioning}
                 className="flex min-h-[48px] w-full items-center justify-center gap-2 rounded-xl bg-leaf-600 px-6 py-3.5 text-base font-semibold text-white shadow-lg shadow-leaf-900/20 transition-all active:scale-[0.98] hover:bg-leaf-700 focus:outline-none focus:ring-2 focus:ring-leaf-500 focus:ring-offset-2 disabled:opacity-70 disabled:pointer-events-none sm:min-h-[52px] sm:flex-1 sm:py-4"
               >
-                Siguiente
+                {t("buttons.next")}
                 <svg className="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
@@ -414,7 +425,7 @@ export default function RegistrationPage() {
                 disabled={loading}
                 className="flex min-h-[48px] w-full items-center justify-center gap-2 rounded-xl bg-leaf-600 px-6 py-3.5 text-base font-semibold text-white shadow-lg shadow-leaf-900/20 transition-all active:scale-[0.98] hover:bg-leaf-700 focus:outline-none focus:ring-2 focus:ring-leaf-500 focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed disabled:active:scale-100 sm:min-h-[52px] sm:flex-1 sm:py-4"
               >
-                {loading ? "Enviando..." : "Enviar registro"}
+                {loading ? t("buttons.submitting") : t("buttons.submit")}
               </button>
             )}
             {currentStep > 0 && (
@@ -427,13 +438,15 @@ export default function RegistrationPage() {
                 <svg className="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M11 17l-5-5m0 0l5-5m-5 5h12" />
                 </svg>
-                Anterior
+                {t("buttons.back")}
               </button>
             )}
           </div>
         </form>
         </div>
       </main>
+      </>
+      )}
     </>
   );
 }

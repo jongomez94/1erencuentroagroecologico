@@ -1,0 +1,90 @@
+{
+  "lang": {
+    "switchLabel": "Idioma",
+    "es": "Español",
+    "en": "English"
+  },
+  "hero": {
+    "ariaLabel": "Encabezado del evento",
+    "title": "1er Encuentro Agroecológico Tomasino",
+    "subtitle": "Registrate para el primer encuentro agroecologico en Santo Tomás"
+  },
+  "intro": {
+    "body": "Encuentro comunitario para compartir conocimientos sobre agroecología, compostaje, semillas y producción local.",
+    "cta": "Completa el registro a continuación"
+  },
+  "aria": {
+    "goToStep": "Ir al paso {{n}}"
+  },
+  "sections": {
+    "basic": {
+      "title": "Información básica",
+      "description": "Necesitamos estos datos para contactarte y organizar el encuentro."
+    },
+    "participation": {
+      "title": "Participación en el evento",
+      "description": "¿Cómo te gustaría participar? Puedes marcar más de una opción."
+    },
+    "interests": {
+      "title": "Intereses",
+      "description": "¿Qué te gustaría hacer en el encuentro? Marca lo que te interese."
+    },
+    "consent": {
+      "title": "Consentimiento"
+    }
+  },
+  "fields": {
+    "fullName": "Nombre",
+    "phone": "Teléfono / WhatsApp",
+    "email": "Correo electrónico",
+    "community": "Municipio o comunidad"
+  },
+  "placeholders": {
+    "fullName": "Ej. María García",
+    "phone": "Ej. 7000 1234",
+    "email": "correo@ejemplo.com",
+    "community": "Ej. San Salvador, Santo Tomás"
+  },
+  "checkboxes": {
+    "visitor": "Solo asistir como visitante",
+    "producer": "Soy productor/a agroecológico",
+    "student": "Soy estudiante",
+    "worksInOrg": "Trabajo en organización o institución",
+    "interestedAgroecology": "Tengo interés en aprender agroecología",
+    "compost": "Aprender sobre compost",
+    "producers": "Conocer productores locales",
+    "seeds": "Intercambiar semillas",
+    "networking": "Crear redes agroecológicas",
+    "futureEvents": "Participar en futuros eventos",
+    "consent": "Acepto que mi información sea usada para organizar este encuentro y futuros eventos agroecológicos.",
+    "consentHelper": "Requerido para completar el registro."
+  },
+  "buttons": {
+    "next": "Siguiente",
+    "back": "Anterior",
+    "submit": "Enviar registro",
+    "submitting": "Enviando..."
+  },
+  "errors": {
+    "phase1": {
+      "full_name": "Por favor ingresa tu nombre.",
+      "phone": "Por favor ingresa tu teléfono o WhatsApp.",
+      "email": "Por favor ingresa tu correo electrónico.",
+      "emailInvalid": "Por favor ingresa un correo electrónico válido.",
+      "community": "Por favor ingresa tu municipio o comunidad."
+    },
+    "submit": {
+      "full_name": "Ingresa tu nombre.",
+      "phone": "Ingresa tu teléfono o WhatsApp.",
+      "email": "Ingresa tu correo electrónico.",
+      "emailInvalid": "Ingresa un correo electrónico válido.",
+      "community": "Ingresa tu municipio o comunidad.",
+      "consent_given": "Debes aceptar el uso de tu información para poder registrarte."
+    },
+    "genericSubmit": "Error al enviar. Intenta de nuevo."
+  },
+  "success": {
+    "title": "¡Gracias por registrarte!",
+    "body": "Nos vemos en el 1er Encuentro Agroecológico Tomasino."
+  }
+}

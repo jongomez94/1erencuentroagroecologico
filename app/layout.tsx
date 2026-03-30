@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Nunito, Source_Sans_3 } from "next/font/google";
+import { Providers } from "./providers";
 import "./globals.css";
 
 const nunito = Nunito({
@@ -37,7 +38,7 @@ export default function RootLayout({
       <body
         className={`${nunito.variable} ${sourceSans.variable} ${interHero.variable} font-sans min-h-screen`}
       >
-        {children}
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

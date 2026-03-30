@@ -1,0 +1,90 @@
+{
+  "lang": {
+    "switchLabel": "Language",
+    "es": "Spanish",
+    "en": "English"
+  },
+  "hero": {
+    "ariaLabel": "Event header",
+    "title": "1st Tomasino Agroecological Gathering",
+    "subtitle": "Sign up for the first agroecological gathering in Santo Tomás"
+  },
+  "intro": {
+    "body": "A community gathering to share knowledge on agroecology, composting, seeds, and local production.",
+    "cta": "Complete the registration below"
+  },
+  "aria": {
+    "goToStep": "Go to step {{n}}"
+  },
+  "sections": {
+    "basic": {
+      "title": "Basic information",
+      "description": "We need this information to contact you and organize the gathering."
+    },
+    "participation": {
+      "title": "How you’ll take part",
+      "description": "How would you like to participate? You can select more than one option."
+    },
+    "interests": {
+      "title": "Interests",
+      "description": "What would you like to do at the gathering? Check all that apply."
+    },
+    "consent": {
+      "title": "Consent"
+    }
+  },
+  "fields": {
+    "fullName": "Name",
+    "phone": "Phone / WhatsApp",
+    "email": "Email",
+    "community": "Municipality or community"
+  },
+  "placeholders": {
+    "fullName": "e.g. Jane Doe",
+    "phone": "e.g. 7000 1234",
+    "email": "you@example.com",
+    "community": "e.g. San Salvador, Santo Tomás"
+  },
+  "checkboxes": {
+    "visitor": "Attend only as a visitor",
+    "producer": "I am an agroecological producer",
+    "student": "I am a student",
+    "worksInOrg": "I work for an organization or institution",
+    "interestedAgroecology": "I want to learn about agroecology",
+    "compost": "Learn about compost",
+    "producers": "Meet local producers",
+    "seeds": "Exchange seeds",
+    "networking": "Build agroecological networks",
+    "futureEvents": "Join future events",
+    "consent": "I agree that my information may be used to organize this gathering and future agroecological events.",
+    "consentHelper": "Required to complete registration."
+  },
+  "buttons": {
+    "next": "Next",
+    "back": "Back",
+    "submit": "Submit registration",
+    "submitting": "Sending..."
+  },
+  "errors": {
+    "phase1": {
+      "full_name": "Please enter your name.",
+      "phone": "Please enter your phone or WhatsApp.",
+      "email": "Please enter your email.",
+      "emailInvalid": "Please enter a valid email address.",
+      "community": "Please enter your municipality or community."
+    },
+    "submit": {
+      "full_name": "Enter your name.",
+      "phone": "Enter your phone or WhatsApp.",
+      "email": "Enter your email.",
+      "emailInvalid": "Enter a valid email address.",
+      "community": "Enter your municipality or community.",
+      "consent_given": "You must accept the use of your information to register."
+    },
+    "genericSubmit": "Could not submit. Please try again."
+  },
+  "success": {
+    "title": "Thank you for registering!",
+    "body": "See you at the 1st Tomasino Agroecological Gathering."
+  }
+}
