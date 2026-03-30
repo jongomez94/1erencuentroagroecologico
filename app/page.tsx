@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { supabase, EventRegistration } from "@/lib/supabaseClient";
 import FormSection from "@/components/FormSection";
 import CheckboxField from "@/components/CheckboxField";
@@ -34,6 +35,10 @@ const INITIAL_FORM: FormState = {
 };
 
 const TOTAL_STEPS = 4;
+
+/** Cultivos de fondo (Unsplash — uso editorial). */
+const HERO_IMAGE =
+  "https://images.unsplash.com/photo-1560493676-04071c5f467b?auto=format&fit=crop&w=1920&q=80";
 
 export default function RegistrationPage() {
   const [form, setForm] = useState<FormState>(INITIAL_FORM);
@@ -132,8 +137,9 @@ export default function RegistrationPage() {
   if (success) {
     return (
       <main className="min-h-screen bg-pattern px-4 py-16 sm:py-24">
-        <div className="mx-auto max-w-md rounded-3xl bg-white/90 p-10 shadow-xl shadow-earth-200/40 ring-1 ring-earth-200/60 text-center">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-leaf-100 text-leaf-600 shadow-inner">
+        <div className="mx-auto max-w-md overflow-hidden rounded-3xl bg-white/95 px-8 pb-10 pt-0 text-center shadow-2xl shadow-leaf-900/10 ring-1 ring-earth-200/70 sm:px-10">
+          <div className="-mx-8 h-1.5 bg-gradient-to-r from-leaf-700 via-leaf-500 to-leaf-600 sm:-mx-10" aria-hidden />
+          <div className="mx-auto mt-10 flex h-16 w-16 items-center justify-center rounded-full bg-leaf-100 text-leaf-600 shadow-inner">
             <svg className="h-9 w-9" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
             </svg>
@@ -153,20 +159,43 @@ export default function RegistrationPage() {
     "mt-2 block w-full rounded-xl border border-earth-300 bg-white/90 px-4 py-3 text-earth-900 placeholder-earth-400 transition-colors focus:border-leaf-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-leaf-500/30";
 
   return (
-    <main className="min-h-screen bg-pattern px-4 py-10 sm:py-16">
-      <div className="mx-auto max-w-2xl">
-        <header className="mb-10 text-center sm:mb-12">
-          <h1 className="text-3xl font-bold tracking-tight text-leaf-900 sm:text-4xl">
+    <>
+      <section
+        className="relative isolate min-h-[min(52vh,28rem)] w-full overflow-hidden sm:min-h-[min(56vh,32rem)]"
+        aria-label="Encabezado del evento"
+      >
+        <Image
+          src={HERO_IMAGE}
+          alt=""
+          fill
+          priority
+          className="object-cover object-center scale-[1.08] blur-[3px] sm:blur-[5px]"
+          sizes="100vw"
+        />
+        <div
+          className="absolute inset-0 bg-gradient-to-b from-leaf-950/50 via-leaf-900/40 to-leaf-950/60"
+          aria-hidden
+        />
+        <div className="relative z-10 flex min-h-[min(52vh,28rem)] items-center justify-center px-5 py-14 sm:min-h-[min(56vh,32rem)] sm:py-16">
+          <h1 className="hero-title max-w-4xl text-center font-hero text-3xl font-bold leading-[1.15] tracking-tight text-white sm:text-4xl md:text-5xl lg:text-[3.25rem]">
             1er Encuentro Agroecológico Tomasino
           </h1>
-          <p className="mt-4 max-w-xl mx-auto text-base leading-relaxed text-earth-700 sm:text-lg">
-            Encuentro comunitario para compartir conocimientos sobre agroecología, compostaje, semillas y producción local.
-          </p>
-        </header>
+        </div>
+      </section>
+
+      <main className="border-t border-earth-200/70 bg-pattern px-4 pb-16 pt-10 sm:pb-24 sm:pt-14">
+        <div className="mx-auto max-w-2xl">
+          <header className="mb-8 text-center sm:mb-10">
+            <p className="mx-auto max-w-xl text-pretty text-base leading-relaxed text-earth-700 sm:text-lg">
+              Encuentro comunitario para compartir conocimientos sobre agroecología, compostaje, semillas y producción
+              local.
+            </p>
+            <p className="mt-3 text-sm font-medium text-leaf-700">Completa el registro a continuación</p>
+          </header>
 
         <form
           onSubmit={handleSubmit}
-          className="rounded-3xl bg-white/80 p-6 shadow-xl shadow-earth-200/30 ring-1 ring-earth-200/50 backdrop-blur-sm sm:p-10"
+          className="rounded-3xl border border-earth-200/60 bg-white/90 p-6 shadow-2xl shadow-leaf-900/[0.06] ring-1 ring-white/80 backdrop-blur-md sm:p-10"
         >
           {/* Indicador de pasos */}
           <div className="mb-8 flex items-center justify-center gap-2 sm:gap-3">
@@ -403,7 +432,8 @@ export default function RegistrationPage() {
             )}
           </div>
         </form>
-      </div>
-    </main>
+        </div>
+      </main>
+    </>
   );
 }
